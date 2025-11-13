@@ -60,7 +60,9 @@ describe('AuthService - Functional Tests', () => {
     it('should return true when user is authenticated with valid token', () => {
       const futureDate = new Date();
       futureDate.setHours(futureDate.getHours() + 1);
-      const token = btoa(JSON.stringify({ exp: Math.floor(futureDate.getTime() / 1000) }));
+      const payload = JSON.stringify({ exp: Math.floor(futureDate.getTime() / 1000), username: 'testuser' });
+      // Create a proper JWT structure (header.payload.signature)
+      const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(payload)}.signature`;
       localStorage.setItem('access_token', token);
 
       expect(service.isAuthenticated()).toBe(true);
@@ -107,9 +109,10 @@ describe('AuthService - Functional Tests', () => {
       expect(localStorage.getItem('refresh_token')).toBeNull();
       expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
 
+      // Flush the logout HTTP request
       const req = httpMock.expectOne(`${environment.apiUrl}/auth/logout`);
       expect(req.request.method).toBe('POST');
-      req.flush({});
+      req.flush({ message: 'Logged out successfully' });
     });
   });
 
@@ -165,6 +168,10 @@ describe('AuthService - Functional Tests', () => {
 
       const req = httpMock.expectOne(`${environment.apiUrl}/auth/refresh`);
       req.flush(mockError, { status: 401, statusText: 'Unauthorized' });
+      
+      // Flush the logout request that happens after refresh failure
+      const logoutReq = httpMock.expectOne(`${environment.apiUrl}/auth/logout`);
+      logoutReq.flush({ message: 'Logged out' });
     });
 
     it('should logout when refresh token is missing', (done) => {
@@ -198,6 +205,9 @@ describe('AuthService - Functional Tests', () => {
         service.login(credentials).subscribe(() => {
           completedCount++;
           if (completedCount === totalRequests) {
+            // Flush any pending logout requests
+            const logoutReqs = httpMock.match(`${environment.apiUrl}/auth/logout`);
+            logoutReqs.forEach(req => req.flush({ message: 'Logged out' }));
             done();
           }
         });

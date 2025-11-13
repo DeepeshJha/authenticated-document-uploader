@@ -92,7 +92,7 @@ describe('UploadService - Functional & Performance Tests', () => {
         done();
       });
 
-      const req = httpMock.expectOne(`${environment.apiUrl}/files?page=1&pageSize=10`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/upload/files?page=1&limit=10`);
       expect(req.request.method).toBe('GET');
       req.flush(mockResponse);
     });
@@ -103,7 +103,7 @@ describe('UploadService - Functional & Performance Tests', () => {
         done();
       });
 
-      const req = httpMock.expectOne(`${environment.apiUrl}/files/123`);
+      const req = httpMock.expectOne('http://localhost:3000/api/upload/files/123');
       expect(req.request.method).toBe('DELETE');
       req.flush({ message: 'File deleted successfully' });
     });
@@ -123,7 +123,7 @@ describe('UploadService - Functional & Performance Tests', () => {
         done();
       });
 
-      const req = httpMock.expectOne(`${environment.apiUrl}/files/stats`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/upload/stats`);
       expect(req.request.method).toBe('GET');
       req.flush(mockResponse);
     });
@@ -167,8 +167,8 @@ describe('UploadService - Functional & Performance Tests', () => {
         }
       });
 
-      const req = httpMock.expectOne(`${environment.apiUrl}/files?page=1&pageSize=10`);
-      req.flush({ message: 'Server error' }, { status: 500, statusText: 'Internal Server Error' });
+      const req = httpMock.expectOne('http://localhost:3000/api/upload/files?page=1&limit=10');
+      req.flush({ message: 'Server error' }, { status: 500, statusText: 'Server Error' });
     });
 
     it('should handle delete file errors', (done) => {
@@ -180,7 +180,7 @@ describe('UploadService - Functional & Performance Tests', () => {
         }
       });
 
-      const req = httpMock.expectOne(`${environment.apiUrl}/files/999`);
+      const req = httpMock.expectOne('http://localhost:3000/api/upload/files/999');
       req.flush({ message: 'File not found' }, { status: 404, statusText: 'Not Found' });
     });
   });
