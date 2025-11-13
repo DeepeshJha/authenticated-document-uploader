@@ -1,0 +1,326 @@
+.signup-container {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+  gap: 2rem;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
+}
+
+.signup-card {
+  flex: 1;
+  max-width: 500px;
+  margin: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  
+  .mat-card-header {
+    text-align: center;
+    padding-bottom: 0;
+    
+    .signup-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      
+      mat-icon {
+        font-size: 2rem;
+        width: 2rem;
+        height: 2rem;
+      }
+    }
+    
+    .mat-card-subtitle {
+      color: rgba(0, 0, 0, 0.6);
+      font-size: 0.9rem;
+    }
+  }
+  
+  .mat-card-content {
+    padding: 1.5rem;
+  }
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .mat-form-field {
+    .mat-hint {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.75rem;
+      
+      mat-icon {
+        font-size: 1rem;
+        width: 1rem;
+        height: 1rem;
+      }
+      
+      mat-spinner {
+        margin-right: 0.25rem;
+      }
+    }
+  }
+}
+
+.password-strength {
+  width: 100%;
+  
+  .mat-progress-bar {
+    height: 4px;
+    border-radius: 2px;
+    margin-bottom: 0.25rem;
+  }
+  
+  .strength-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+}
+
+.terms-section {
+  margin: 1rem 0;
+  
+  .mat-checkbox {
+    font-size: 0.875rem;
+    
+    .terms-link {
+      color: #3f51b5;
+      text-decoration: none;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+  
+  .terms-error {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: block;
+  }
+}
+
+.form-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ffebee;
+  color: #c62828;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+  
+  mat-icon {
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+.button-section {
+  margin: 1.5rem 0 1rem;
+  
+  .signup-button {
+    width: 100%;
+    height: 48px;
+    font-size: 1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    
+    mat-spinner {
+      margin-right: 0.5rem;
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+    }
+  }
+}
+
+.login-link-section {
+  text-align: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  
+  p {
+    margin: 0;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 0.875rem;
+    
+    button {
+      font-weight: 500;
+    }
+  }
+}
+
+.features-section {
+  flex: 1;
+  max-width: 400px;
+  margin: auto;
+  color: white;
+  
+  @media (max-width: 768px) {
+    text-align: center;
+  }
+  
+  h3 {
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    
+    mat-icon {
+      font-size: 2.5rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      color: rgba(255, 255, 255, 0.9);
+      flex-shrink: 0;
+    }
+    
+    div {
+      h4 {
+        margin: 0 0 0.5rem;
+        font-size: 1.25rem;
+        font-weight: 500;
+      }
+      
+      p {
+        margin: 0;
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.5;
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .signup-container {
+    padding: 1rem;
+  }
+  
+  .signup-card {
+    margin: 0;
+    
+    .mat-card-content {
+      padding: 1rem;
+    }
+  }
+  
+  .features-section {
+    margin-top: 2rem;
+    
+    h3 {
+      font-size: 1.5rem;
+    }
+    
+    .feature-item {
+      mat-icon {
+        font-size: 2rem;
+        width: 2rem;
+        height: 2rem;
+      }
+    }
+  }
+}
+
+// Dark theme adjustments
+.dark-theme {
+  .signup-card {
+    background: #303030;
+    color: white;
+    
+    .mat-card-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+  
+  .form-error {
+    background: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+  }
+  
+  .login-link-section {
+    border-top-color: rgba(255, 255, 255, 0.12);
+    
+    p {
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+}
+
+// Animation for form validation
+.mat-form-field.mat-form-field-invalid {
+  .mat-form-field-outline {
+    animation: shake 0.3s ease-in-out;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+// Loading state animations
+.signup-button {
+  transition: all 0.3s ease;
+  
+  &:disabled {
+    transform: scale(0.98);
+  }
+}
+
+// Password strength colors
+.mat-progress-bar {
+  &.mat-warn .mat-progress-bar-fill::after {
+    background-color: #f44336;
+  }
+  
+  &.mat-accent .mat-progress-bar-fill::after {
+    background-color: #ff9800;
+  }
+  
+  &.mat-primary .mat-progress-bar-fill::after {
+    background-color: #4caf50;
+  }
+}

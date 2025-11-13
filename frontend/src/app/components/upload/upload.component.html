@@ -1,0 +1,280 @@
+<div class="upload-container">
+  <!-- Header -->
+  <mat-toolbar class="upload-header">
+    <span class="header-title">
+      <mat-icon>cloud_upload</mat-icon>
+      Document Uploader
+    </span>
+    
+    <span class="spacer"></span>
+    
+    <div class="user-info" *ngIf="currentUser">
+      <mat-icon>person</mat-icon>
+      <span>{{ currentUser?.username }}</span>
+      <button mat-icon-button (click)="logout()" aria-label="Logout">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+  </mat-toolbar>
+
+  <div class="upload-content">
+    <!-- Upload Stats -->
+    <div class="stats-section" *ngIf="uploadStats">
+      <mat-card class="stats-card">
+        <mat-card-content>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <mat-icon class="stat-icon">folder</mat-icon>
+              <div class="stat-info">
+                <span class="stat-value">{{ uploadStats?.totalFiles }}</span>
+                <span class="stat-label">Total Files</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <mat-icon class="stat-icon">storage</mat-icon>
+              <div class="stat-info">
+                <span class="stat-value">{{ uploadStats?.totalSizeMB }} MB</span>
+                <span class="stat-label">Total Size</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <mat-icon class="stat-icon">schedule</mat-icon>
+              <div class="stat-info">
+                <span class="stat-value">{{ uploadStats?.latestUpload | date:'short' }}</span>
+                <span class="stat-label">Latest Upload</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Upload Area -->
+    <div class="upload-section" *ngIf="showUploadArea">
+      <mat-card class="upload-area-card">
+        <mat-card-content>
+          <div class="upload-area" 
+               [class.drag-over]="isDragOver"
+               (dragover)="onDragOver($event)"
+               (dragleave)="onDragLeave($event)"
+               (drop)="onDrop($event)"
+               (click)="triggerFileInput()">
+            
+            <div class="upload-icon-container">
+              <mat-icon class="upload-icon">cloud_upload</mat-icon>
+            </div>
+            
+            <h3>Upload Documents</h3>
+            <p class="upload-description">
+              Drag and drop files here or click to browse
+            </p>
+            
+            <button mat-raised-button color="primary" (click)="triggerFileInput()" class="browse-button">
+              <mat-icon>folder_open</mat-icon>
+              Browse Files
+            </button>
+            
+            <input #fileInput 
+                   type="file" 
+                   multiple 
+                   accept="*/*"
+                   (change)="onFileSelected($event)"
+                   style="display: none;">
+            
+            <div class="upload-info">
+              <mat-icon>info</mat-icon>
+              <span>Supported formats: PDF, DOCX, TXT | Max size: 10MB per file</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Upload Queue -->
+    <div class="upload-queue-section" *ngIf="hasQueuedFiles()">
+      <mat-card class="upload-queue-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>queue</mat-icon>
+            Upload Queue
+          </mat-card-title>
+          <mat-card-subtitle>
+            {{ uploadQueue.activeUploads }} active, {{ getPendingUploadsCount() }} pending, {{ getCompletedUploadsCount() }} completed
+          </mat-card-subtitle>
+          <div class="queue-actions">
+            <button mat-icon-button 
+                    *ngIf="hasActiveUploads()" 
+                    (click)="cancelAllUploads()"
+                    matTooltip="Cancel all uploads"
+                    color="warn">
+              <mat-icon>cancel</mat-icon>
+            </button>
+            <button mat-icon-button 
+                    *ngIf="getCompletedUploadsCount() > 0"
+                    (click)="clearCompletedUploads()"
+                    matTooltip="Clear completed uploads"
+                    color="accent">
+              <mat-icon>clear</mat-icon>
+            </button>
+          </div>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div class="upload-queue">
+            <div class="upload-item" *ngFor="let file of uploadQueue.files; trackBy: trackByFileId">
+              <div class="file-info">
+                <mat-icon class="file-icon">{{ getFileIcon(file.originalName) }}</mat-icon>
+                <div class="file-details">
+                  <div class="file-name">{{ file.originalName }}</div>
+                  <div class="file-meta">
+                    {{ formatFileSize(file.size) }}
+                    <span class="status-badge" [ngClass]="'status-' + file.status">
+                      <mat-icon class="status-icon">{{ getStatusIcon(file.status!) }}</mat-icon>
+                      {{ file.status | titlecase }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="upload-progress" *ngIf="file.status === 'uploading'">
+                <mat-progress-bar 
+                  mode="determinate" 
+                  [value]="getUploadProgress(file)"
+                  color="primary">
+                </mat-progress-bar>
+                <span class="progress-text">{{ getUploadProgress(file) }}%</span>
+              </div>
+              
+              <div class="upload-actions">
+                <button mat-icon-button 
+                        *ngIf="file.status === 'pending' || file.status === 'uploading'"
+                        (click)="cancelUpload(file.id!)"
+                        matTooltip="Cancel upload"
+                        color="warn">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+                <button mat-icon-button 
+                        *ngIf="file.status === 'failed'"
+                        (click)="retryUpload(file.id!)"
+                        matTooltip="Retry upload"
+                        color="primary">
+                  <mat-icon>refresh</mat-icon>
+                </button>
+              </div>
+              
+              <div class="error-message" *ngIf="file.error">
+                <mat-icon>error</mat-icon>
+                {{ file.error }}
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Files List -->
+    <div class="files-section">
+      <mat-card class="files-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>folder</mat-icon>
+            Your Files
+          </mat-card-title>
+          
+          <!-- Search Bar -->
+          <div class="search-container">
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Search files</mat-label>
+              <input matInput 
+                     [(ngModel)]="searchQuery" 
+                     (keyup.enter)="onSearch()"
+                     placeholder="Enter filename...">
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+            <button mat-icon-button (click)="onSearch()" color="primary" matTooltip="Search">
+              <mat-icon>search</mat-icon>
+            </button>
+            <button mat-icon-button 
+                    (click)="clearSearch()" 
+                    *ngIf="searchQuery"
+                    color="accent" 
+                    matTooltip="Clear search">
+              <mat-icon>clear</mat-icon>
+            </button>
+          </div>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <!-- Loading Spinner -->
+          <div class="loading-container" *ngIf="filesLoading">
+            <mat-spinner diameter="40"></mat-spinner>
+            <span>Loading files...</span>
+          </div>
+          
+          <!-- Files Table -->
+          <div class="files-table" *ngIf="!filesLoading && userFiles.length > 0">
+            <mat-table [dataSource]="userFiles" class="files-mat-table">
+              <!-- Name Column -->
+              <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+                <mat-cell *matCellDef="let file">
+                  <div class="file-name-cell">
+                    <mat-icon class="file-type-icon">{{ getFileIcon(file.originalName) }}</mat-icon>
+                    <span>{{ file.originalName }}</span>
+                  </div>
+                </mat-cell>
+              </ng-container>
+
+              <!-- Size Column -->
+              <ng-container matColumnDef="size">
+                <mat-header-cell *matHeaderCellDef>Size</mat-header-cell>
+                <mat-cell *matCellDef="let file">{{ formatFileSize(file.size) }}</mat-cell>
+              </ng-container>
+
+              <!-- Upload Date Column -->
+              <ng-container matColumnDef="uploadedAt">
+                <mat-header-cell *matHeaderCellDef>Uploaded</mat-header-cell>
+                <mat-cell *matCellDef="let file">{{ file.uploadedAt | date:'medium' }}</mat-cell>
+              </ng-container>
+
+              <!-- Actions Column -->
+              <ng-container matColumnDef="actions">
+                <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+                <mat-cell *matCellDef="let file">
+                  <button mat-icon-button (click)="downloadFile(file)" matTooltip="Download" color="primary">
+                    <mat-icon>download</mat-icon>
+                  </button>
+                  <button mat-icon-button (click)="deleteFile(file)" matTooltip="Delete" color="warn">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </mat-cell>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="['name', 'size', 'uploadedAt', 'actions']"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: ['name', 'size', 'uploadedAt', 'actions'];"></mat-row>
+            </mat-table>
+          </div>
+          
+          <!-- No Files Message -->
+          <div class="no-files" *ngIf="!filesLoading && userFiles.length === 0">
+            <mat-icon class="no-files-icon">folder_open</mat-icon>
+            <h3>No files found</h3>
+            <p *ngIf="!searchQuery">Upload some files to get started</p>
+            <p *ngIf="searchQuery">No files match your search criteria</p>
+          </div>
+          
+          <!-- Pagination -->
+          <mat-paginator 
+            *ngIf="!filesLoading && totalFiles > itemsPerPage"
+            [length]="totalFiles"
+            [pageSize]="itemsPerPage"
+            [pageSizeOptions]="[5, 10, 25, 50]"
+            [pageIndex]="currentPage - 1"
+            (page)="onPageChange($event)"
+            showFirstLastButtons>
+          </mat-paginator>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

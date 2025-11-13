@@ -1,0 +1,566 @@
+.upload-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.upload-header {
+  background: linear-gradient(135deg, #3f51b5 0%, #2196f3 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.2em;
+    font-weight: 500;
+
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+.upload-content {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+// Stats Section
+.stats-section {
+  .stats-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    
+    mat-card-content {
+      padding: 20px;
+    }
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+
+    .stat-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      color: #3f51b5;
+    }
+
+    .stat-info {
+      display: flex;
+      flex-direction: column;
+
+      .stat-value {
+        font-size: 1.5em;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .stat-label {
+        font-size: 0.85em;
+        color: #666;
+        margin-top: 2px;
+      }
+    }
+  }
+}
+
+// Upload Area
+.upload-section {
+  .upload-area-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    
+    mat-card-content {
+      padding: 0;
+    }
+  }
+
+  .upload-area {
+    padding: 40px;
+    text-align: center;
+    border: 2px dashed #ccc;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background-color: #fafafa;
+
+    &:hover, &.drag-over {
+      border-color: #3f51b5;
+      background-color: #f3f4ff;
+      transform: translateY(-2px);
+    }
+
+    .upload-icon-container {
+      margin-bottom: 20px;
+
+      .upload-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        color: #3f51b5;
+        opacity: 0.8;
+      }
+    }
+
+    h3 {
+      margin: 0 0 8px 0;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .upload-description {
+      color: #666;
+      margin-bottom: 24px;
+      font-size: 1.1em;
+    }
+
+    .browse-button {
+      margin-bottom: 20px;
+      height: 44px;
+      padding: 0 24px;
+      border-radius: 8px;
+      font-weight: 500;
+
+      mat-icon {
+        margin-right: 8px;
+      }
+    }
+
+    .upload-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #666;
+      font-size: 0.9em;
+
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+}
+
+// Upload Queue
+.upload-queue-section {
+  .upload-queue-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+
+    mat-card-header {
+      background-color: #f8f9fa;
+      margin: -16px -16px 16px -16px;
+      padding: 16px;
+      border-radius: 12px 12px 0 0;
+
+      mat-card-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.1em;
+
+        mat-icon {
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      mat-card-subtitle {
+        margin-top: 4px;
+        font-size: 0.9em;
+      }
+
+      .queue-actions {
+        margin-left: auto;
+        display: flex;
+        gap: 8px;
+      }
+    }
+  }
+
+  .upload-queue {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .upload-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border-left: 4px solid #3f51b5;
+
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+
+      .file-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+        color: #666;
+      }
+
+      .file-details {
+        flex: 1;
+
+        .file-name {
+          font-weight: 500;
+          color: #333;
+          margin-bottom: 4px;
+        }
+
+        .file-meta {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-size: 0.85em;
+          color: #666;
+
+          .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 500;
+
+            .status-icon {
+              font-size: 14px;
+              width: 14px;
+              height: 14px;
+            }
+
+            &.status-pending {
+              background-color: #fff3cd;
+              color: #856404;
+            }
+
+            &.status-uploading {
+              background-color: #d1ecf1;
+              color: #0c5460;
+            }
+
+            &.status-success {
+              background-color: #d4edda;
+              color: #155724;
+            }
+
+            &.status-failed {
+              background-color: #f8d7da;
+              color: #721c24;
+            }
+          }
+        }
+      }
+    }
+
+    .upload-progress {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 120px;
+
+      mat-progress-bar {
+        flex: 1;
+        height: 6px;
+        border-radius: 3px;
+      }
+
+      .progress-text {
+        font-size: 0.8em;
+        font-weight: 500;
+        color: #666;
+        min-width: 30px;
+      }
+    }
+
+    .upload-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    .error-message {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #d32f2f;
+      font-size: 0.85em;
+      margin-top: 8px;
+      padding: 8px;
+      background-color: #ffebee;
+      border-radius: 4px;
+      flex-basis: 100%;
+
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+}
+
+// Files Section
+.files-section {
+  .files-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+
+    mat-card-header {
+      background-color: #f8f9fa;
+      margin: -16px -16px 16px -16px;
+      padding: 16px;
+      border-radius: 12px 12px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      mat-card-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.1em;
+
+        mat-icon {
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      .search-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .search-field {
+          width: 250px;
+        }
+      }
+    }
+  }
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    gap: 16px;
+    color: #666;
+  }
+
+  .files-table {
+    .files-mat-table {
+      width: 100%;
+
+      .file-name-cell {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .file-type-icon {
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+          color: #666;
+        }
+      }
+
+      mat-header-cell {
+        font-weight: 600;
+        color: #333;
+      }
+
+      mat-cell {
+        padding: 12px 8px;
+      }
+
+      mat-row {
+        &:hover {
+          background-color: #f5f5f5;
+        }
+      }
+    }
+  }
+
+  .no-files {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+
+    .no-files-icon {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+      color: #ccc;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      margin: 0 0 8px 0;
+      color: #999;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.9em;
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .upload-content {
+    padding: 16px;
+  }
+
+  .upload-header {
+    .user-info {
+      span {
+        display: none;
+      }
+    }
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .upload-area {
+    padding: 24px 16px;
+
+    .upload-icon-container .upload-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  .upload-item {
+    flex-direction: column;
+    align-items: stretch;
+
+    .file-info {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .upload-progress {
+      min-width: auto;
+      width: 100%;
+    }
+  }
+
+  .files-card {
+    mat-card-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+
+      .search-container {
+        .search-field {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  .files-table {
+    overflow-x: auto;
+
+    .files-mat-table {
+      min-width: 600px;
+    }
+  }
+}
+
+// Animations
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.upload-area-card,
+.upload-queue-card,
+.files-card,
+.stats-card {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+// Custom scrollbar for upload queue
+.upload-queue {
+  max-height: 400px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+
+    &:hover {
+      background: #999;
+    }
+  }
+}

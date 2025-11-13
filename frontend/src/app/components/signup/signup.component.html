@@ -1,0 +1,201 @@
+<div class="signup-container">
+  <mat-card class="signup-card">
+    <mat-card-header>
+      <mat-card-title class="signup-title">
+        <mat-icon>person_add</mat-icon>
+        Create Account
+      </mat-card-title>
+      <mat-card-subtitle>
+        Join us to start uploading and managing your documents
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
+        
+        <!-- Username Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Username</mat-label>
+          <input matInput 
+                 formControlName="username" 
+                 placeholder="Enter your username"
+                 autocomplete="username">
+          <mat-icon matSuffix>person</mat-icon>
+          
+          <!-- Username availability indicator -->
+          <mat-hint *ngIf="checkingUsername">
+            <mat-spinner diameter="16"></mat-spinner>
+            Checking availability...
+          </mat-hint>
+          <mat-hint *ngIf="!checkingUsername && getControl('username')?.valid && getControl('username')?.value">
+            <mat-icon [color]="usernameAvailable ? 'primary' : 'warn'">
+              {{ usernameAvailable ? 'check_circle' : 'cancel' }}
+            </mat-icon>
+            {{ usernameAvailable ? 'Username available' : 'Username not available' }}
+          </mat-hint>
+          
+          <mat-error *ngIf="hasError('username')">
+            {{ getErrorMessage('username') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Email Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email Address</mat-label>
+          <input matInput 
+                 formControlName="email" 
+                 type="email"
+                 placeholder="Enter your email address"
+                 autocomplete="email">
+          <mat-icon matSuffix>email</mat-icon>
+          
+          <!-- Email availability indicator -->
+          <mat-hint *ngIf="checkingEmail">
+            <mat-spinner diameter="16"></mat-spinner>
+            Checking availability...
+          </mat-hint>
+          <mat-hint *ngIf="!checkingEmail && getControl('email')?.valid && getControl('email')?.value">
+            <mat-icon [color]="emailAvailable ? 'primary' : 'warn'">
+              {{ emailAvailable ? 'check_circle' : 'cancel' }}
+            </mat-icon>
+            {{ emailAvailable ? 'Email available' : 'Email already registered' }}
+          </mat-hint>
+          
+          <mat-error *ngIf="hasError('email')">
+            {{ getErrorMessage('email') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Password Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput 
+                 formControlName="password"
+                 [type]="hidePassword ? 'password' : 'text'"
+                 placeholder="Enter your password"
+                 autocomplete="new-password">
+          <button mat-icon-button 
+                  matSuffix 
+                  (click)="hidePassword = !hidePassword"
+                  type="button"
+                  [attr.aria-label]="'Hide password'"
+                  [attr.aria-pressed]="hidePassword">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          
+          <!-- Password strength indicator -->
+          <mat-hint *ngIf="getControl('password')?.value">
+            <div class="password-strength">
+              <mat-progress-bar 
+                mode="determinate" 
+                [value]="getPasswordStrength().level"
+                [color]="getPasswordStrength().color">
+              </mat-progress-bar>
+              <span class="strength-text">{{ getPasswordStrength().text }}</span>
+            </div>
+          </mat-hint>
+          
+          <mat-error *ngIf="hasError('password')">
+            {{ getErrorMessage('password') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Confirm Password Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Confirm Password</mat-label>
+          <input matInput 
+                 formControlName="confirmPassword"
+                 [type]="hideConfirmPassword ? 'password' : 'text'"
+                 placeholder="Confirm your password"
+                 autocomplete="new-password">
+          <button mat-icon-button 
+                  matSuffix 
+                  (click)="hideConfirmPassword = !hideConfirmPassword"
+                  type="button"
+                  [attr.aria-label]="'Hide password'"
+                  [attr.aria-pressed]="hideConfirmPassword">
+            <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          
+          <mat-error *ngIf="hasError('confirmPassword')">
+            {{ getErrorMessage('confirmPassword') }}
+          </mat-error>
+          <mat-error *ngIf="signupForm.hasError('passwordMismatch') && getControl('confirmPassword')?.touched">
+            Passwords do not match
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Terms and Conditions -->
+        <div class="terms-section">
+          <mat-checkbox formControlName="acceptTerms">
+            I agree to the <a href="#" class="terms-link">Terms of Service</a> 
+            and <a href="#" class="terms-link">Privacy Policy</a>
+          </mat-checkbox>
+          <mat-error *ngIf="hasError('acceptTerms')" class="terms-error">
+            You must accept the terms and conditions to continue
+          </mat-error>
+        </div>
+
+        <!-- Error Message -->
+        <mat-error *ngIf="error" class="form-error">
+          <mat-icon>error</mat-icon>
+          {{ error }}
+        </mat-error>
+
+        <!-- Submit Button -->
+        <div class="button-section">
+          <button mat-raised-button 
+                  color="primary" 
+                  type="submit"
+                  class="signup-button"
+                  [disabled]="isLoading || !signupForm.valid || !usernameAvailable || !emailAvailable">
+            <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
+            <mat-icon *ngIf="!isLoading">person_add</mat-icon>
+            {{ isLoading ? 'Creating Account...' : 'Create Account' }}
+          </button>
+        </div>
+
+        <!-- Login Link -->
+        <div class="login-link-section">
+          <p>Already have an account? 
+            <button mat-button 
+                    color="primary" 
+                    (click)="goToLogin()"
+                    type="button">
+              Sign In
+            </button>
+          </p>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Features Section -->
+  <div class="features-section">
+    <h3>Why join us?</h3>
+    <div class="feature-list">
+      <div class="feature-item">
+        <mat-icon>cloud_upload</mat-icon>
+        <div>
+          <h4>Secure Upload</h4>
+          <p>Upload your documents safely with end-to-end encryption</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <mat-icon>folder</mat-icon>
+        <div>
+          <h4>Easy Management</h4>
+          <p>Organize, search, and manage all your files in one place</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <mat-icon>security</mat-icon>
+        <div>
+          <h4>Privacy First</h4>
+          <p>Your data is protected with industry-standard security</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

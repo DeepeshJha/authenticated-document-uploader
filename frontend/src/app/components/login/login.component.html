@@ -1,0 +1,122 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>login</mat-icon>
+        Login to Document Uploader
+      </mat-card-title>
+      <mat-card-subtitle>Please enter your credentials</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Error Alert -->
+      <div *ngIf="error" class="error-alert" role="alert">
+        <mat-icon aria-hidden="true">error</mat-icon>
+        <span class="error-text">{{ error }}</span>
+        <button
+          mat-icon-button
+          type="button"
+          (click)="clearError()"
+          aria-label="Clear error message"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <!-- Username/Email Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Username or Email</mat-label>
+          <input 
+            matInput 
+            formControlName="identifier" 
+            placeholder="Enter username or email"
+            autocomplete="username"
+            [class.mat-form-field-invalid]="hasFieldError('identifier')"
+          >
+          <mat-icon matSuffix>person</mat-icon>
+          <mat-error *ngIf="hasFieldError('identifier')">
+            {{ getFieldError('identifier') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Password Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input 
+            matInput 
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="password" 
+            placeholder="Enter password"
+            autocomplete="current-password"
+            [class.mat-form-field-invalid]="hasFieldError('password')"
+          >
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            (click)="togglePasswordVisibility()" 
+            [attr.aria-label]="'Hide password'" 
+            [attr.aria-pressed]="!hidePassword"
+          >
+            <mat-icon>{{ hidePassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="hasFieldError('password')">
+            {{ getFieldError('password') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Submit Button -->
+        <button 
+          mat-raised-button 
+          color="primary" 
+          type="submit"
+          class="login-button full-width"
+          [disabled]="loading"
+        >
+          <mat-spinner *ngIf="loading" diameter="20" class="login-spinner"></mat-spinner>
+          <span *ngIf="!loading">
+            <mat-icon>login</mat-icon>
+            Login
+          </span>
+          <span *ngIf="loading">Logging in...</span>
+        </button>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions class="login-actions">
+      <!-- Signup Link -->
+      <div class="signup-link">
+        <p>Don't have an account? 
+          <button mat-button color="primary" (click)="goToSignup()">
+            Create Account
+          </button>
+        </p>
+      </div>
+
+      <div class="demo-credentials">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-icon>info</mat-icon>
+              Demo Credentials
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="demo-accounts">
+            <div class="demo-account">
+              <strong>Admin Account:</strong><br>
+              Username: <code>admin</code><br>
+              Password: <code>Admin@123</code>
+            </div>
+            <div class="demo-account">
+              <strong>User Account:</strong><br>
+              Username: <code>user</code><br>
+              Password: <code>User@123</code>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+</div>

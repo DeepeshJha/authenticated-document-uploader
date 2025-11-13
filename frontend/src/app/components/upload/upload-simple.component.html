@@ -1,0 +1,172 @@
+<div class="upload-container">
+  <!-- Simple Header -->
+  <div class="upload-header">
+    <h1>Document Uploader</h1>
+    <div class="user-info" *ngIf="currentUser">
+      <span>Welcome, {{ currentUser.username }}</span>
+      <button (click)="logout()" class="logout-btn">Logout</button>
+    </div>
+  </div>
+
+  <div class="upload-content">
+    <!-- Simple Upload Area -->
+    <div class="upload-section" *ngIf="showUploadArea">
+      <div class="upload-area" 
+           [class.drag-over]="isDragOver"
+           (dragover)="onDragOver($event)"
+           (dragleave)="onDragLeave($event)"
+           (drop)="onDrop($event)"
+           (click)="onUploadAreaClick($event)">
+        
+        <div class="upload-icon">📁</div>
+        
+        <h3>Upload Documents</h3>
+        <p class="upload-description">
+          Drag and drop files here or click to browse
+        </p>
+        
+  <button (click)="triggerFileInput($event)" class="browse-button">
+          📂 Browse Files
+        </button>
+        
+        <input #fileInput 
+               type="file" 
+               multiple 
+               accept="*/*"
+               (change)="onFileSelected($event)"
+               style="display: none;">
+        
+        <div class="upload-info">
+          ℹ️ Supported formats: PDF, DOCX, TXT | Max size: 10MB per file
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload Queue -->
+    <div class="upload-queue-section" *ngIf="hasQueuedFiles()">
+      <div class="upload-queue">
+        <div class="queue-header">
+          <h3>Upload Queue</h3>
+          <div class="queue-actions">
+            <button *ngIf="getPendingUploadsCount() > 0" 
+                    (click)="startAllUploads()"
+                    class="start-all-btn">
+              ▶️ Start All Uploads
+            </button>
+          </div>
+        </div>
+        <div class="queue-info">
+          {{ uploadQueue.activeUploads }} active, {{ getPendingUploadsCount() }} pending, {{ getCompletedUploadsCount() }} completed
+        </div>
+        
+        <div class="upload-item" *ngFor="let file of uploadQueue.files; trackBy: trackByFileId">
+          <div class="file-info">
+            <span class="file-icon">📄</span>
+            <div class="file-details">
+              <div class="file-name">{{ file.originalName }}</div>
+              <div class="file-meta">
+                {{ formatFileSize(file.size) }}
+                <span class="status-badge status-{{file.status}}">
+                  {{ file.status }}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="upload-progress" *ngIf="file.status === 'uploading'">
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="getUploadProgress(file)"></div>
+            </div>
+            <span class="progress-text">{{ getUploadProgress(file) }}%</span>
+          </div>
+          
+          <div class="upload-actions">
+            <button *ngIf="file.status === 'pending'"
+                    (click)="startUpload(file.id!)"
+                    class="start-btn">▶️ Start</button>
+            <button *ngIf="file.status === 'pending'"
+                    (click)="cancelUpload(file.id!)"
+                    class="cancel-btn">❌ Remove</button>
+            <button *ngIf="file.status === 'uploading'"
+                    (click)="cancelUpload(file.id!)"
+                    class="cancel-btn">🛑 Cancel</button>
+            <button *ngIf="file.status === 'failed'"
+                    (click)="retryUpload(file.id!)"
+                    class="retry-btn">🔄 Retry</button>
+            <button *ngIf="file.status === 'failed'"
+                    (click)="cancelUpload(file.id!)"
+                    class="cancel-btn">❌ Remove</button>
+            <button *ngIf="file.status === 'success'"
+                    (click)="cancelUpload(file.id!)"
+                    class="cancel-btn">✓ Clear</button>
+          </div>
+          
+          <div class="error-message" *ngIf="file.error">
+            ❌ {{ file.error }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Files List -->
+    <div class="files-section">
+      <div class="files-header">
+        <h3>📁 Your Files</h3>
+        
+        <!-- Simple Search -->
+        <div class="search-container">
+          <input [(ngModel)]="searchQuery" 
+                 (keyup.enter)="onSearch()"
+                 placeholder="Search files..."
+                 class="search-input">
+          <button (click)="onSearch()" class="search-btn">🔍</button>
+          <button (click)="clearSearch()" 
+                  *ngIf="searchQuery"
+                  class="clear-btn">✖️</button>
+        </div>
+      </div>
+      
+      <!-- Loading -->
+      <div class="loading-container" *ngIf="filesLoading">
+        <div class="spinner">⏳</div>
+        <span>Loading files...</span>
+      </div>
+      
+      <!-- Files Table -->
+      <div class="files-table" *ngIf="!filesLoading && userFiles.length > 0">
+        <table class="simple-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Size</th>
+              <th>Uploaded</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let file of userFiles">
+              <td>
+                <span class="file-icon">📄</span>
+                {{ file.originalName }}
+              </td>
+              <td>{{ formatFileSize(file.size) }}</td>
+              <td>{{ file.uploadedAt | date:'medium' }}</td>
+              <td>
+                <button (click)="downloadFile(file)" class="download-btn">⬇️ Download</button>
+                <button (click)="deleteFile(file)" class="delete-btn">🗑️ Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- No Files Message -->
+      <div class="no-files" *ngIf="!filesLoading && userFiles.length === 0">
+        <div class="no-files-icon">📂</div>
+        <h3>No files found</h3>
+        <p *ngIf="!searchQuery">Upload some files to get started</p>
+        <p *ngIf="searchQuery">No files match your search criteria</p>
+      </div>
+    </div>
+  </div>
+</div>
